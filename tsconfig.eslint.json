@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src",
+    "asset.d.ts",
+    "src/tests",
+    "vite.config.ts",
+    "typed-scss-modules.config.ts",
+    ".storybook/*.ts"
+  ]
+}
