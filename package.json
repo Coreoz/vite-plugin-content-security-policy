@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "description": "A Vite plugin for managing Content Security Policy (CSP) headers during development and generating Apache/Nginx configuration files",
   "type": "module",
-  "main": "build/cjs/index.js",
-  "module": "build/esm/index.js",
-  "typings": "build/esm/index.d.ts",
+  "main": "build/index.js",
+  "module": "build/index.js",
+  "typings": "build/index.d.ts",
   "keywords": [
     "vite",
     "vite-plugin",
@@ -52,11 +52,9 @@
     "vitest": "^3.1.1"
   },
   "scripts": {
-    "build": "yarn build:cjs && yarn run build:esm",
-    "build:cjs": "tsc --module commonjs --outDir build/cjs -p tsconfig.json",
-    "build:esm": "tsc --module esnext --outDir build/esm -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "clean": "rm -rf build",
-    "typescript": "tsc --noEmit --outDir build/esm -p tsconfig.json",
+    "typescript": "tsc --noEmit -p tsconfig.json",
     "eslint": "eslint src --ext .ts",
     "prepare-release": "yarn clean && yarn typescript && yarn eslint && yarn test && yarn build",
     "release": "release-it",
@@ -67,7 +65,9 @@
   ],
   "release-it": {
     "hooks": {
-      "before:init": ["yarn prepare-release"]
+      "before:init": [
+        "yarn prepare-release"
+      ]
     }
   },
   "packageManager": "yarn@4.9.1",
