@@ -58,7 +58,7 @@ export default defineConfig({
 ### CSP Configuration File Generation Plugin
 
 The CSP Configuration File Generation Plugin generates CSP configuration files for different
-environments that can be used with Nginx or Apache servers.
+environments that can be used with Nginx or Apache servers. File will be generated when the server starts.
 
 ```typescript
 // vite.config.ts
@@ -96,7 +96,7 @@ export default defineConfig({
 });
 ```
 
-The plugin will generate configuration files in the `content-security-policy/configurations/`
+The plugin will generate configuration files in the `/content-security-policy/configurations`
 directory with names like `csp-configuration.production.txt`, `csp-configuration.staging.txt`, etc.
 
 Each file will contain configuration for both Nginx and Apache servers:
@@ -108,7 +108,7 @@ add_header Content-Security-Policy "default-src 'self'; script-src 'self' https:
 # Apache configuration
 Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://production.example.com; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.production.example.com"
 ```
-> Note : You can move the rules to `/<root>/content-security-policy/csp-configuration.ts` for automatic file generation when the file changes
+> Note : File will be generated if vite.config.ts or if `/<root>/content-security-policy/csp-configuration.ts` change.
 
 ## Advanced Configuration
 
@@ -138,4 +138,8 @@ cspConfigurationFileGenerationPlugin({
 })
 ```
 
-Configuration files will be generated when this file (or when vite.config.ts) changes
+Configuration files will be generated when this file (or when vite.config.ts) changes.
+
+## Resources
+
+See [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy#directives) for more information about CSP
