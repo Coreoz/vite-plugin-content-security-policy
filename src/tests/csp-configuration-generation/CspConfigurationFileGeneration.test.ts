@@ -1,6 +1,8 @@
+import {
+  computeOriginForEnvironment
+} from '@lib/csp/ComputeOriginForEnvironment';
 import { describe, it, expect } from 'vitest';
 import {
-  computeOriginForEnvironment,
   computeCspDirectiveForEnvironment,
 } from '@lib/csp-configuration-generation/CspConfigurationFileGeneration';
 import { AuthorisedOrigins, CspPolicies } from '@lib/csp/CspDirectives';

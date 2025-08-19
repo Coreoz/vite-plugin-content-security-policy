@@ -140,6 +140,43 @@ cspConfigurationFileGenerationPlugin({
 
 Configuration files will be generated when this file (or when vite.config.ts) changes.
 
+### Using Nonces with CSP
+
+You can use nonces with CSP to allow specific inline scripts and styles. The plugin supports replacing a `{RANDOM}` placeholder with a generated nonce:
+
+1. Configure `html.cspNonce` in your Vite config:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
+
+export default defineConfig({
+  plugins: [
+    cspProxyPlugin({
+      rules: {
+        'default-src': "'self'",
+        'script-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
+        'style-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
+      },
+      noncesConfiguration: {
+        template: '{RANDOM}'
+      }
+    }),
+  ],
+  html: {
+    cspNonce: '{RANDOM}',
+  },
+});
+```
+
+2. The plugin will:
+   - Generate a cryptographically secure random nonce
+   - Replace the `{RANDOM}` placeholder in `html.cspNonce` with the generated nonce
+   - Replace `nonce-{RANDOM}` in CSP rules with `nonce-[generated-nonce]`
+
+This ensures that the same nonce is used for both the CSP headers and the HTML attributes, allowing specific inline scripts and styles to be executed while maintaining security.
+
 ## Resources
 
 See [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy#directives) for more information about CSP

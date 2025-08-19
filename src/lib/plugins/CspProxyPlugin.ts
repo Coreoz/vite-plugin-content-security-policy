@@ -1,7 +1,12 @@
-import { configureCspProxyServer } from '@lib/csp-proxy/CspProxy';
+import { configureCspProxyServer, generateNonce } from '@lib/csp-proxy/CspProxy';
 import { CspPolicies } from '@lib/csp/CspDirectives';
 import { ReportType } from '@lib/csp/CspHeaders';
 import { Plugin, ViteDevServer } from 'vite';
+
+export type NoncesConfiguration<Environment> = {
+  nonceTemplate: string,
+  developmentKey?: Environment,
+};
 
 /**
  * This type is used to define the rules and reporting behavior for Content Security Policy (CSP).
@@ -10,10 +15,12 @@ import { Plugin, ViteDevServer } from 'vite';
  *
  * @property rules - A set of CSP policies specified for different environments. This ensures the appropriate CSP rules are applied based on the defined environment type.
  * @property reportType - The type of report to be generated for CSP violations. This property is optional.
+ * @property noncesConfiguration - Nonces configuration
  */
 export type CspProxyPluginOptions<Environment extends string = never> = {
   rules: CspPolicies<Environment>,
   reportType?: ReportType,
+  noncesConfiguration?: NoncesConfiguration<Environment>,
 };
 
 /**
@@ -25,7 +32,7 @@ export type CspProxyPluginOptions<Environment extends string = never> = {
  *
  * @template Environment - The type of the environment, defaults to `never` when not specified.
  * @param {CspProxyPluginOptions<Environment>} options - The options to configure the CSP proxy plugin.
- * @param {CspRuleSet<Environment>} options.rules - An object defining the CSP rules to be enforced.
+ * @param {CspPolicies<Environment>} options.rules - An object defining the CSP rules to be enforced.
  * @param {string} [options.reportType] - An optional report type to specify how CSP violations should be reported.
  * @returns {Plugin} A Vite plugin object with the required CSP configuration.
  */
@@ -33,15 +40,34 @@ export const cspProxyPlugin = <Environment extends string = never>(
   {
     rules,
     reportType,
+    noncesConfiguration,
   }: CspProxyPluginOptions<Environment>,
-): Plugin => ({
-  name: 'csp-proxy-plugin',
-  apply: 'serve',
-  configureServer: (server: ViteDevServer) => {
-    configureCspProxyServer(
-      server,
-      rules,
-      reportType,
-    );
-  },
-});
+): Plugin => {
+  const nonce: string = generateNonce();
+
+  return ({
+    name: 'csp-proxy-plugin',
+    apply: 'serve',
+    configureServer: (server: ViteDevServer) => {
+      if ((!server.config.html?.cspNonce && !!noncesConfiguration) || (!!server.config.html?.cspNonce && !noncesConfiguration)) {
+        console.error(
+          'Configure the html.cspNonce value in vite.config.ts to enable the nonce template replacement in the HTML template. ',
+        );
+      }
+
+      // Replace placeholder in html.cspNonce with the generated nonce if the property has been set in Vite
+      if (!!server.config.html) {
+        server.config.html.cspNonce = nonce;
+      }
+
+      // Add CSP to headers
+      configureCspProxyServer<Environment>(
+        server,
+        rules,
+        nonce,
+        reportType,
+        noncesConfiguration,
+      );
+    },
+  });
+};
