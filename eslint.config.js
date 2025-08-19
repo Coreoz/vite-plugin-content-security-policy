@@ -1,8 +1,5 @@
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tseslintParser from '@typescript-eslint/parser';
-import react from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
 import sayari from '@sayari/eslint-plugin';
 import airbnbBase from 'eslint-config-airbnb-base';
 import importPlugin from 'eslint-plugin-import';
@@ -12,22 +9,17 @@ import compat from 'eslint-plugin-compat';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  react.configs.flat.recommended,
   compat.configs["flat/recommended"],
-  jsxA11y.flatConfigs.recommended,
   stylistic.configs.recommended,
   {
     ignores: [
       'build/*',
       'public/*',
     ],
-    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+    files: ['**/*.js', '**/*.ts'],
     languageOptions: {
       parser: tseslintParser,
       parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
         ecmaVersion: 'latest',
         sourceType: 'module',
         project: './tsconfig.eslint.json',
@@ -37,16 +29,11 @@ export default [
       'airbnb': airbnbBase,
       'airbnb-typescript': airbnbTs,
       '@typescript-eslint': tseslint,
-      react,
       'import': importPlugin,
       '@stylistic': stylistic,
-      'react-hooks': reactHooks,
       '@sayari': sayari,
     },
     settings: {
-      react: {
-        version: 'detect',
-      },
       polyfills: [
         'AbortController',
         'PromiseConstructor.allSettled',
@@ -70,9 +57,7 @@ export default [
       '@stylistic/brace-style': ['error', '1tbs', {'allowSingleLine': false}],
       '@stylistic/function-paren-newline': 'off',
       '@stylistic/multiline-ternary': ['error', 'always-multiline'],
-      '@stylistic/jsx-wrap-multilines': ['error', {'prop': 'ignore'}],
       'no-continue': 'error',
-      'react/require-default-props': 0,
       'import/prefer-default-export': 2,
       'import/no-absolute-path': 'off',
       'no-restricted-syntax': [
@@ -124,27 +109,7 @@ export default [
           'variableDeclarationIgnoreFunction': true,
         },
       ],
-      'react-hooks/rules-of-hooks': 'error',
       '@stylistic/linebreak-style': 'off',
-      // Add all your custom hooks which have dependencies in the additional hooks
-      // If you have several hooks, here is the syntax 'additionalHooks': '(hook1|hook2)'
-      'react-hooks/exhaustive-deps': ['warn', {'additionalHooks': 'useOnDependenciesChange|useEffectWithSsrSupport|useObservableLoader'}],
-      'no-restricted-imports': [
-        'error',
-        {
-          'patterns': [
-            {
-              'group': ['/**/**.module.scss', '!./**.module.scss'],
-              'message': 'SCSS modules can not be imported from outside of its component folder.',
-            },
-            {
-              'group': ['clsx'],
-              'message': 'Please use the classNames function in lib folder',
-            },
-          ],
-        },
-      ],
-      'react/react-in-jsx-scope': 0
     },
   },
 ];
