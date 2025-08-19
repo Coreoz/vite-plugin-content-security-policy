@@ -108,7 +108,7 @@ add_header Content-Security-Policy "default-src 'self'; script-src 'self' https:
 # Apache configuration
 Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://production.example.com; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.production.example.com"
 ```
-> Note : File will be generated if vite.config.ts or if `/<root>/content-security-policy/csp-configuration.ts` change.
+> Note : File will be generated if vite.config.ts or if `/<root>/content-security-policy/csp-configuration.ts` change
 
 ## Advanced Configuration
 
