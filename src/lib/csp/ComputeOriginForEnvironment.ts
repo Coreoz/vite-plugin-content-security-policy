@@ -1,4 +1,4 @@
-import { AuthorisedOrigins } from '@lib/csp/CspDirectives';
+import { AuthorisedOrigins, CspPolicies } from '@lib/csp/CspDirectives';
 
 /**
  * Computes and returns the origin for a specific environment based on the provided configuration.
@@ -8,7 +8,6 @@ import { AuthorisedOrigins } from '@lib/csp/CspDirectives';
  * @param {Environment} environment - The current environment for which the origin should be determined.
  * @returns {string} - The resolved origin for the specified environment. If no specific origin is found for the environment, the default origine is returned.
  */
-// eslint-disable-next-line import/prefer-default-export
 export const computeOriginForEnvironment = <Environment extends string = never>(
   origine: AuthorisedOrigins<Environment>,
   environment?: Environment,
@@ -18,4 +17,28 @@ export const computeOriginForEnvironment = <Environment extends string = never>(
   }
 
   return origine[environment] ?? origine.default;
+};
+
+/**
+ * Generates a Content Security Policy (CSP) directive string based on provided
+ * policies and the specified environment.
+ *
+ * @template Environment - The type representing the environment. Defaults to `never`.
+ * @param {CspPolicies<Environment>} policies - An object defining CSP policies, mapping
+ *                                               directives to their respective authorized origins.
+ * @param {Environment} environment - The current environment for which the CSP directives should
+ *                                     be computed.
+ * @returns {string} The resulting CSP directive.
+ */
+export const computeCspDirectiveForEnvironment = <Environment extends string = never>(
+  policies: CspPolicies<Environment>,
+  environment?: Environment,
+): string => {
+  return Object
+    .entries(policies)
+    .map(([directive, value]: [string, AuthorisedOrigins<Environment>]) => {
+      const allowedOrigin: string = computeOriginForEnvironment(value, environment);
+      return `${directive} ${allowedOrigin}`;
+    })
+    .join('; ');
 };

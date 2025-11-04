@@ -1,4 +1,6 @@
-import { computeOriginForEnvironment } from '@lib/csp/ComputeOriginForEnvironment';
+import {
+  computeCspDirectiveForEnvironment,
+} from '@lib/csp/ComputeOriginForEnvironment';
 import { AuthorisedOrigins, CspPolicies } from '@lib/csp/CspDirectives';
 import { computeHeaderNameByReportType, ReportType } from '@lib/csp/CspHeaders';
 import { NoncesConfiguration } from '@lib/plugins/CspProxyPlugin';
@@ -28,38 +30,7 @@ export const replaceNoncePlaceholder = (
   placeholder: string,
   nonceValue: string,
 ): string => {
-  return initialValue.replace(placeholder, `${nonceValue}`);
-};
-
-/**
- * Computes a Content Security Policy (CSP) directive string based on the given policies object.
- *
- * This function iterates through the provided policies object, where each property represents a CSP directive
- * and its corresponding allowed origins. It constructs a directive string in the format:
- * `directive allowedOrigin;`.
- *
- * The `allowedOrigin` is determined based on the type of the value in the policies object. If the value is
- * a string, it is directly used as the allowed origin. If the value is an object containing a `default` property,
- * the value of the `default` property is used.
- *
- * @param {CspPolicies} policies - An object representing the CSP policies where each key is a directive name
- *                                 and the value represents the allowed origins for that directive.
- * @param developmentKey the key of the development environment if it exists
- * @returns {string} The computed CSP directive string.
- */
-export const computeDirectivesForDevelopmentEnvironment = <Environment extends string = never>(
-  policies: CspPolicies,
-  developmentKey?: Environment,
-): string => {
-  console.log(policies);
-
-  return Object.entries(policies).reduce(
-    (rules: string, [directive, value]: [string, AuthorisedOrigins<Environment>]) => {
-      const allowedOrigin: string = computeOriginForEnvironment(value, developmentKey);
-      return `${rules}${directive} ${allowedOrigin}; `;
-    },
-    '',
-  );
+  return initialValue.replaceAll(placeholder, `${nonceValue}`);
 };
 
 /**
@@ -146,7 +117,7 @@ export function configureCspProxyServer<Environment extends string = never>(
     }
 
     // Process the rules to replace the nonce placeholder  placeholders with the generated nonce if template is provided
-    const directives: string = computeDirectivesForDevelopmentEnvironment(
+    const directives: string = computeCspDirectiveForEnvironment<Environment>(
       !!noncesConfiguration
         ? computeRulesWithNonce(rules, nonce, noncesConfiguration.nonceTemplate)
         : rules,

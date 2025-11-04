@@ -40,7 +40,7 @@ import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
 
 export default defineConfig({
   plugins: [
-    cspProxyPlugin({
+    cspProxyPlugin<Environment>{
       rules: {
         'default-src': "'self'",
         'script-src': "'self'",
@@ -89,7 +89,7 @@ export default defineConfig({
       environments: new Set(['production', 'staging', 'preproduction']),
       // Optional: Use 'report' for report-only mode, 'strict' for enforcement (default)
       reportType: 'strict',
-      // Optional: Custom path for the generated configuration files
+      // Optional: Custom path for the CSP configuration file relatively to the root of the project
       cspConfigurationFilePath: 'custom/path/csp-configuration.ts',
     }),
   ],
@@ -117,7 +117,7 @@ Header set Content-Security-Policy "default-src 'self'; script-src 'self' https:
 You can use report-only mode to monitor CSP violations without blocking content:
 
 ```typescript
-cspProxyPlugin({
+cspProxyPlugin<Environment>{
   rules: {
     // Your CSP rules
   },
@@ -153,14 +153,15 @@ import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
 
 export default defineConfig({
   plugins: [
-    cspProxyPlugin({
+    cspProxyPlugin<Environment>{
       rules: {
         'default-src': "'self'",
         'script-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
         'style-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
       },
       noncesConfiguration: {
-        template: '{RANDOM}'
+        template: '{RANDOM}', 
+        developmentKey: 'dev'
       }
     }),
   ],
@@ -172,8 +173,10 @@ export default defineConfig({
 
 2. The plugin will:
    - Generate a cryptographically secure random nonce
-   - Replace the `{RANDOM}` placeholder in `html.cspNonce` with the generated nonce
+   - Replace the `html.cspNonce` from the vite.config.ts with the generated nonce
    - Replace `nonce-{RANDOM}` in CSP rules with `nonce-[generated-nonce]`
+
+> ⚠️ `html.cspNonce` from the vite.config.ts will be overridden by the public in development mode
 
 This ensures that the same nonce is used for both the CSP headers and the HTML attributes, allowing specific inline scripts and styles to be executed while maintaining security.
 

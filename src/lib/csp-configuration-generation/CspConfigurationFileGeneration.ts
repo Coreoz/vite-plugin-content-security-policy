@@ -1,7 +1,5 @@
-import {
-  computeOriginForEnvironment,
-} from '@lib/csp/ComputeOriginForEnvironment';
-import { AuthorisedOrigins, CspPolicies } from '@lib/csp/CspDirectives';
+import { computeCspDirectiveForEnvironment } from '@lib/csp/ComputeOriginForEnvironment';
+import { CspPolicies } from '@lib/csp/CspDirectives';
 import { computeHeaderNameByReportType, ReportType } from '@lib/csp/CspHeaders';
 import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
@@ -9,30 +7,6 @@ import { Logger } from 'simple-logging-system';
 import { ViteDevServer } from 'vite';
 
 const logger: Logger = new Logger('CspConfigurationFileGeneration');
-
-/**
- * Generates a Content Security Policy (CSP) directive string based on provided
- * policies and the specified environment.
- *
- * @template Environment - The type representing the environment. Defaults to `never`.
- * @param {CspPolicies<Environment>} policies - An object defining CSP policies, mapping
- *                                               directives to their respective authorized origins.
- * @param {Environment} environment - The current environment for which the CSP directives should
- *                                     be computed.
- * @returns {string} The resulting CSP directive.
- */
-export const computeCspDirectiveForEnvironment = <Environment extends string = never>(
-  policies: CspPolicies<Environment>,
-  environment: Environment,
-): string => {
-  return Object
-    .entries(policies)
-    .map(([directive, value]: [string, AuthorisedOrigins<Environment>]) => {
-      const allowedOrigin: string = computeOriginForEnvironment(value, environment);
-      return `${directive} ${allowedOrigin}`;
-    })
-    .join('; ');
-};
 
 /**
  * Generates a configuration file content compatible with Nginx and Apache
