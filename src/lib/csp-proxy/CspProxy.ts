@@ -30,7 +30,7 @@ export const replaceNoncePlaceholder = (
   placeholder: string,
   nonceValue: string,
 ): string => {
-  return initialValue.replaceAll(placeholder, `${nonceValue}`);
+  return initialValue.replaceAll(placeholder, nonceValue);
 };
 
 /**
@@ -116,11 +116,14 @@ export function configureCspProxyServer<Environment extends string = never>(
       response.locals.cspNonce = nonce;
     }
 
+    // If there is a nonce configuration, replace the placeholder by the generated value
+    const computedRules: CspPolicies<Environment> = !!noncesConfiguration
+      ? computeRulesWithNonce<Environment>(rules, nonce, noncesConfiguration.nonceTemplate, noncesConfiguration.developmentKey)
+      : rules;
+
     // Process the rules to replace the nonce placeholder  placeholders with the generated nonce if template is provided
     const directives: string = computeCspDirectiveForEnvironment<Environment>(
-      !!noncesConfiguration
-        ? computeRulesWithNonce(rules, nonce, noncesConfiguration.nonceTemplate)
-        : rules,
+      computedRules,
       noncesConfiguration?.developmentKey,
     );
 
