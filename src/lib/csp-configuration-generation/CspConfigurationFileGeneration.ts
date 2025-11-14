@@ -42,7 +42,7 @@ export const generateCspConfigurationFileForEnvironment = async <Environment ext
   rules: CspPolicies<Environment>,
   environment: Environment,
 ): Promise<void> => {
-  const directive: string = computeCspDirectiveForEnvironment(rules, environment);
+  const directive: string = computeCspDirectiveForEnvironment<Environment>(rules, environment);
 
   try {
     await mkdir('content-security-policy/configurations', { recursive: true });

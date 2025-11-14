@@ -53,7 +53,7 @@ export const cspProxyPlugin = <Environment extends string = never>(
       // Nonce configuration must be enabled in vite and in the plugin in order to work
       if ((!htmlNonce && !!noncesConfiguration) || (!!htmlNonce && !noncesConfiguration)) {
         console.error(
-          'Configure the html.cspNonce value in vite.config.ts to enable the nonce template replacement in the HTML template. ',
+          'Configure the html.cspNonce value in vite.config.ts to enable the nonce template replacement in the HTML template.',
         );
       }
 

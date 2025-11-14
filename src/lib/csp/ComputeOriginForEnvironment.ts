@@ -21,7 +21,7 @@ export const computeOriginForEnvironment = <Environment extends string = never>(
 
 /**
  * Generates a Content Security Policy (CSP) directive string based on provided
- * policies and the specified environment.
+ * policies and the specified environment. If no environment is provided, the default directive is used.
  *
  * @template Environment - The type representing the environment. Defaults to `never`.
  * @param {CspPolicies<Environment>} policies - An object defining CSP policies, mapping
@@ -37,7 +37,7 @@ export const computeCspDirectiveForEnvironment = <Environment extends string = n
   return Object
     .entries(policies)
     .map(([directive, value]: [string, AuthorisedOrigins<Environment>]) => {
-      const allowedOrigin: string = computeOriginForEnvironment(value, environment);
+      const allowedOrigin: string = computeOriginForEnvironment<Environment>(value, environment);
       return `${directive} ${allowedOrigin}`;
     })
     .join('; ');

@@ -176,7 +176,7 @@ export default defineConfig({
    - Replace the `html.cspNonce` from the vite.config.ts with the generated nonce
    - Replace `nonce-{RANDOM}` in CSP rules with `nonce-[generated-nonce]`
 
-> ⚠️ `html.cspNonce` from the vite.config.ts will be overridden by the public in development mode
+> ⚠️ `html.cspNonce` from the vite.config.ts will be overridden by the plugin in development mode
 
 This ensures that the same nonce is used for both the CSP headers and the HTML attributes, allowing specific inline scripts and styles to be executed while maintaining security.
 
