@@ -38,6 +38,10 @@ you to test your application with CSP restrictions in place.
 import { defineConfig } from 'vite';
 import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
 
+// Define your environments
+export const ENVIRONMENTS = <const>['production', 'staging', 'development'];
+export type Environment = typeof ENVIRONMENTS[number];
+
 export default defineConfig({
   plugins: [
     cspProxyPlugin<Environment>{
@@ -66,7 +70,8 @@ import { defineConfig } from 'vite';
 import { cspConfigurationFileGenerationPlugin } from 'vite-plugin-content-security-policy';
 
 // Define your environments
-type Environment = 'production' | 'staging' | 'development';
+export const ENVIRONMENTS = <const>['production', 'staging', 'development'];
+export type Environment = typeof ENVIRONMENTS[number];
 
 export default defineConfig({
   plugins: [
@@ -86,7 +91,7 @@ export default defineConfig({
           staging: "'self' https://api.staging.example.com",
         },
       },
-      environments: new Set(['production', 'staging', 'preproduction']),
+      environments: new Set(ENVIRONMENTS),
       // Optional: Use 'report' for report-only mode, 'strict' for enforcement (default)
       reportType: 'strict',
       // Optional: Custom path for the CSP configuration file relatively to the root of the project
@@ -150,6 +155,10 @@ You can use nonces with CSP to allow specific inline scripts and styles. The plu
 // vite.config.ts
 import { defineConfig } from 'vite';
 import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
+
+// Define your environments
+export const ENVIRONMENTS = <const>['production', 'staging', 'development'];
+export type Environment = typeof ENVIRONMENTS[number];
 
 export default defineConfig({
   plugins: [
