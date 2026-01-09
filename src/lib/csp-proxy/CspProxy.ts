@@ -108,7 +108,7 @@ export function configureCspProxyServer<Environment extends string = never>(
     response: http.ServerResponse<Connect.IncomingMessage>,
     next: Connect.NextFunction,
   ) => {
-    if (!!noncesConfiguration) {
+    if (Boolean(noncesConfiguration)) {
       // Store the nonce in the response locals for potential use in HTML templates
       // @ts-expect-error - Adding custom property to response
       response.locals = response.locals || {};
