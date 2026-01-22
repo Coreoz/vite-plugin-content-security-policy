@@ -38,9 +38,13 @@ you to test your application with CSP restrictions in place.
 import { defineConfig } from 'vite';
 import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
 
+// Define your environments
+export const ENVIRONMENTS = <const>['production', 'staging', 'development'];
+export type Environment = typeof ENVIRONMENTS[number];
+
 export default defineConfig({
   plugins: [
-    cspProxyPlugin({
+    cspProxyPlugin<Environment>{
       rules: {
         'default-src': "'self'",
         'script-src': "'self'",
@@ -66,7 +70,8 @@ import { defineConfig } from 'vite';
 import { cspConfigurationFileGenerationPlugin } from 'vite-plugin-content-security-policy';
 
 // Define your environments
-type Environment = 'production' | 'staging' | 'development';
+export const ENVIRONMENTS = <const>['production', 'staging', 'development'];
+export type Environment = typeof ENVIRONMENTS[number];
 
 export default defineConfig({
   plugins: [
@@ -86,10 +91,10 @@ export default defineConfig({
           staging: "'self' https://api.staging.example.com",
         },
       },
-      environments: new Set(['production', 'staging', 'preproduction']),
+      environments: new Set(ENVIRONMENTS),
       // Optional: Use 'report' for report-only mode, 'strict' for enforcement (default)
       reportType: 'strict',
-      // Optional: Custom path for the generated configuration files
+      // Optional: Custom path for the CSP configuration file relatively to the root of the project
       cspConfigurationFilePath: 'custom/path/csp-configuration.ts',
     }),
   ],
@@ -108,7 +113,7 @@ add_header Content-Security-Policy "default-src 'self'; script-src 'self' https:
 # Apache configuration
 Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://production.example.com; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.production.example.com"
 ```
-> Note : File will be generated if vite.config.ts or if `/<root>/content-security-policy/csp-configuration.ts` change.
+> Note : File will be generated if vite.config.ts or if `/<root>/content-security-policy/csp-configuration.ts` change
 
 ## Advanced Configuration
 
@@ -117,7 +122,7 @@ Header set Content-Security-Policy "default-src 'self'; script-src 'self' https:
 You can use report-only mode to monitor CSP violations without blocking content:
 
 ```typescript
-cspProxyPlugin({
+cspProxyPlugin<Environment>{
   rules: {
     // Your CSP rules
   },
@@ -139,6 +144,50 @@ cspConfigurationFileGenerationPlugin({
 ```
 
 Configuration files will be generated when this file (or when vite.config.ts) changes.
+
+### Using Nonces with CSP
+
+You can use nonces with CSP to allow specific inline scripts and styles. The plugin supports replacing a `{RANDOM}` placeholder with a generated nonce:
+
+1. Configure `html.cspNonce` in your Vite config:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import { cspProxyPlugin } from 'vite-plugin-content-security-policy';
+
+// Define your environments
+export const ENVIRONMENTS = <const>['production', 'staging', 'development'];
+export type Environment = typeof ENVIRONMENTS[number];
+
+export default defineConfig({
+  plugins: [
+    cspProxyPlugin<Environment>{
+      rules: {
+        'default-src': "'self'",
+        'script-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
+        'style-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
+      },
+      noncesConfiguration: {
+        template: '{RANDOM}', 
+        developmentKey: 'dev'
+      }
+    }),
+  ],
+  html: {
+    cspNonce: '{RANDOM}',
+  },
+});
+```
+
+2. The plugin will:
+   - Generate a cryptographically secure random nonce
+   - Replace the `html.cspNonce` from the vite.config.ts with the generated nonce
+   - Replace `nonce-{RANDOM}` in CSP rules with `nonce-[generated-nonce]`
+
+> ⚠️ `html.cspNonce` from the vite.config.ts will be overridden by the plugin in development mode
+
+This ensures that the same nonce is used for both the CSP headers and the HTML attributes, allowing specific inline scripts and styles to be executed while maintaining security.
 
 ## Resources
 

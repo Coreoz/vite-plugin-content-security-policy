@@ -23,6 +23,7 @@ bin/
 
 # Intellij
 .idea/
+.junie/
 *.iml
 *.iws
 
