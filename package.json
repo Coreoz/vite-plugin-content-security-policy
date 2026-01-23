@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-content-security-policy",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A Vite plugin for managing Content Security Policy (CSP) headers during development and generating Apache/Nginx configuration files",
   "author": "Aurélien Manteaux <amanteaux@coreoz.com> (https://coreoz.com)",
   "contributors": [
