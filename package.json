@@ -59,7 +59,7 @@
     "vitest": "^4.0.17"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.app.json && tsc-alias -p tsconfig.app.json",
+    "build": "tsc -p tsconfig.app.json && tsc-alias -p tsconfig.app.json --resolve-full-paths",
     "clean": "rm -rf build",
     "typescript": "tsc --noEmit -p tsconfig.json",
     "eslint": "eslint src --ext .ts",
