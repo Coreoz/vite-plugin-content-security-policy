@@ -31,6 +31,9 @@
   "bugs": {
     "url": "https://github.com/Coreoz/vite-plugin-content-security-policy/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "simple-logging-system": "^1.1.0"
   },
