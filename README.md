@@ -44,7 +44,7 @@ export type Environment = typeof ENVIRONMENTS[number];
 
 export default defineConfig({
   plugins: [
-    cspProxyPlugin<Environment>{
+    cspProxyPlugin<Environment>({
       rules: {
         'default-src': "'self'",
         'script-src': "'self'",
@@ -122,7 +122,7 @@ Header set Content-Security-Policy "default-src 'self'; script-src 'self' https:
 You can use report-only mode to monitor CSP violations without blocking content:
 
 ```typescript
-cspProxyPlugin<Environment>{
+cspProxyPlugin<Environment>({
   rules: {
     // Your CSP rules
   },
@@ -162,7 +162,7 @@ export type Environment = typeof ENVIRONMENTS[number];
 
 export default defineConfig({
   plugins: [
-    cspProxyPlugin<Environment>{
+    cspProxyPlugin<Environment>({
       rules: {
         'default-src': "'self'",
         'script-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
