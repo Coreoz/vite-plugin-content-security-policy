@@ -15,6 +15,13 @@ applications:
 
 ## Installation
 
+### Requirements
+
+This package is an ESM package, be sure that your project is compatible with ESM.
+In you are using a [Plume front project](https://github.com/Coreoz/create-plume-react-project) version <= 3.X.X, update your project to plume >= 4.X.X by following the [migration guide](https://github.com/Coreoz/create-plume-react-project/blob/master/docs/migration-guide-to-swc-plugin.md).
+
+### Adding the package to a project
+
 ```bash
 # npm
 npm install vite-plugin-content-security-policy --save-dev
