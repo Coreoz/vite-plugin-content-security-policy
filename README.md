@@ -196,6 +196,12 @@ export default defineConfig({
 
 This ensures that the same nonce is used for both the CSP headers and the HTML attributes, allowing specific inline scripts and styles to be executed while maintaining security.
 
+#### Apache
+
+If you are using nonces with an Apache server :
+- add `<!--#echo var='CSP_NONCE' -->` in `html.cspNonce` property of `vite.config.ts`
+- enable SSI module and [csp nonce module](https://github.com/wyday/mod_cspnonce) in Apache
+
 ## Resources
 
 See [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy#directives) for more information about CSP
