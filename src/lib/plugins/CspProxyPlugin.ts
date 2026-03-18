@@ -3,9 +3,8 @@ import { CspPolicies } from '@lib/csp/CspDirectives';
 import { ReportType } from '@lib/csp/CspHeaders';
 import { Plugin, ViteDevServer } from 'vite';
 
-export type NoncesConfiguration<Environment> = {
+export type NoncesConfiguration = {
   nonceTemplate: string,
-  developmentKey?: Environment,
 };
 
 /**
@@ -15,12 +14,14 @@ export type NoncesConfiguration<Environment> = {
  *
  * @property rules - A set of CSP policies specified for different environments. This ensures the appropriate CSP rules are applied based on the defined environment type.
  * @property reportType - The type of report to be generated for CSP violations. This property is optional.
+ * @property developmentKey - The key used to identify the development environment. It allows proxy to known which configuration when running vite dev. This property is optional.
  * @property noncesConfiguration - Nonces configuration
  */
 export type CspProxyPluginOptions<Environment extends string = never> = {
   rules: CspPolicies<Environment>,
   reportType?: ReportType,
-  noncesConfiguration?: NoncesConfiguration<Environment>,
+  developmentKey?: Environment,
+  noncesConfiguration?: NoncesConfiguration,
 };
 
 /**
@@ -33,6 +34,8 @@ export type CspProxyPluginOptions<Environment extends string = never> = {
  * @template Environment - The type of the environment, defaults to `never` when not specified.
  * @param {CspProxyPluginOptions<Environment>} options - The options to configure the CSP proxy plugin.
  * @param {CspPolicies<Environment>} options.rules - An object defining the CSP rules to be enforced.
+ * @param {Environment} [options.developmentKey] - An optional key to identify the development environment.
+ * @param {NoncesConfiguration} [options.noncesConfiguration] - An optional configuration for generating nonces.
  * @param {string} [options.reportType] - An optional report type to specify how CSP violations should be reported.
  * @returns {Plugin} A Vite plugin object with the required CSP configuration.
  */
@@ -40,6 +43,7 @@ export const cspProxyPlugin = <Environment extends string = never>(
   {
     rules,
     reportType,
+    developmentKey,
     noncesConfiguration,
   }: CspProxyPluginOptions<Environment>,
 ): Plugin => {
@@ -68,6 +72,7 @@ export const cspProxyPlugin = <Environment extends string = never>(
         rules,
         nonce,
         reportType,
+        developmentKey,
         noncesConfiguration,
       );
     },

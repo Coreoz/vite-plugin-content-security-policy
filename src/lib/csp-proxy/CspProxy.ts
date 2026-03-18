@@ -94,6 +94,7 @@ const computeRulesWithNonce = <Environment extends string = never>(
  * @param rules The CSP policies or rules to apply for file generation across the specified environments.
  * @param nonce Nonce value to use for the request
  * @param reportType Optional parameter to specify the type of CSP report to generate.
+ * @param developmentKey Optional parameter to specify the key of the development environment.
  * @param noncesConfiguration The nonce configuration
  */
 export function configureCspProxyServer<Environment extends string = never>(
@@ -101,7 +102,8 @@ export function configureCspProxyServer<Environment extends string = never>(
   rules: CspPolicies,
   nonce: string,
   reportType?: ReportType,
-  noncesConfiguration?: NoncesConfiguration<Environment>,
+  developmentKey?: Environment,
+  noncesConfiguration?: NoncesConfiguration,
 ) {
   server.middlewares.use((
     _: Connect.IncomingMessage,
@@ -118,13 +120,13 @@ export function configureCspProxyServer<Environment extends string = never>(
 
     // If there is a nonce configuration, replace the placeholder by the generated value
     const computedRules: CspPolicies<Environment> = !!noncesConfiguration
-      ? computeRulesWithNonce<Environment>(rules, nonce, noncesConfiguration.nonceTemplate, noncesConfiguration.developmentKey)
+      ? computeRulesWithNonce<Environment>(rules, nonce, noncesConfiguration.nonceTemplate, developmentKey)
       : rules;
 
     // Process the rules to replace the nonce placeholder  placeholders with the generated nonce if template is provided
     const directives: string = computeCspDirectiveForEnvironment<Environment>(
       computedRules,
-      noncesConfiguration?.developmentKey,
+      developmentKey,
     );
 
     const cspHeader: string = computeHeaderNameByReportType(reportType);
