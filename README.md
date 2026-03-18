@@ -52,6 +52,8 @@ export type Environment = typeof ENVIRONMENTS[number];
 export default defineConfig({
   plugins: [
     cspProxyPlugin<Environment>({
+      // Optional: tell which configuration to apply when running vite serve (default is used if undefined) 
+      developmentKey: 'development', 
       rules: {
         'default-src': "'self'",
         'script-src': "'self'",
@@ -169,7 +171,8 @@ export type Environment = typeof ENVIRONMENTS[number];
 
 export default defineConfig({
   plugins: [
-    cspProxyPlugin<Environment>({
+    cspProxyPlugin<Environment>({ 
+      developmentKey: 'development',
       rules: {
         'default-src': "'self'",
         'script-src': "'self' 'unsafe-inline' nonce-{RANDOM}",
@@ -177,7 +180,6 @@ export default defineConfig({
       },
       noncesConfiguration: {
         template: '{RANDOM}', 
-        developmentKey: 'dev'
       }
     }),
   ],
