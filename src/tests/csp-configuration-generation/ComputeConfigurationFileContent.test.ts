@@ -11,10 +11,10 @@ describe('computeConfigurationFileContent', () => {
     const result: string = computeConfigurationFileContent(headerName, directive);
 
     const expected: string = `# Nginx configuration
-add_header Content-Security-Policy "default-src 'self'";
+add_header Content-Security-Policy "default-src 'self' always";
 
 # Apache configuration
-Header set Content-Security-Policy "default-src 'self'"
+Header always set Content-Security-Policy "default-src 'self'"
 `;
     expect(result).toBe(expected);
   });
@@ -26,10 +26,10 @@ Header set Content-Security-Policy "default-src 'self'"
     const result: string = computeConfigurationFileContent(headerName, directive);
 
     const expected: string = `# Nginx configuration
-add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://example.com; style-src 'self' 'unsafe-inline'";
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://example.com; style-src 'self' 'unsafe-inline' always";
 
 # Apache configuration
-Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://example.com; style-src 'self' 'unsafe-inline'"
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://example.com; style-src 'self' 'unsafe-inline'"
 `;
     expect(result).toBe(expected);
   });
@@ -41,10 +41,10 @@ Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsaf
     const result: string = computeConfigurationFileContent(headerName, directive);
 
     const expected: string = `# Nginx configuration
-add_header Content-Security-Policy-Report-Only "default-src 'self'; report-uri https://example.com/report";
+add_header Content-Security-Policy-Report-Only "default-src 'self'; report-uri https://example.com/report always";
 
 # Apache configuration
-Header set Content-Security-Policy-Report-Only "default-src 'self'; report-uri https://example.com/report"
+Header always set Content-Security-Policy-Report-Only "default-src 'self'; report-uri https://example.com/report"
 `;
     expect(result).toBe(expected);
   });

@@ -20,8 +20,8 @@ export const computeConfigurationFileContent = (
   headerName: string,
   directive: string,
 ): string => {
-  const nginxHeader: string = `add_header ${headerName} "${directive}";`;
-  const apacheHeader: string = `Header set ${headerName} "${directive}"`;
+  const nginxHeader: string = `add_header ${headerName} "${directive} always";`;
+  const apacheHeader: string = `Header always set ${headerName} "${directive}"`;
   return `# Nginx configuration\n${nginxHeader}\n\n# Apache configuration\n${apacheHeader}\n`;
 };
 
