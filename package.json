@@ -60,7 +60,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.app.json && tsc-alias -p tsconfig.app.json --resolve-full-paths",
-    "clean": "rm -rf build",
+    "clean": "node -e \"require('node:fs').rmSync('build',{recursive:true,force:true})\"",
     "typescript": "tsc --noEmit -p tsconfig.json",
     "eslint": "eslint src --ext .ts",
     "prepare-release": "yarn clean && yarn typescript && yarn eslint && yarn test && yarn build",
